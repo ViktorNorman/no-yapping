@@ -114,9 +114,13 @@ cd no-yapping
 Aider, Zed, Jules and many more — so `agents` covers most tools. Gemini CLI reads
 `GEMINI.md`; Claude Code uses the skill folder.
 
-**Triggering.** As a Claude skill it fires when you say _"no yapping"_, _"just the
-code"_, or _"be terse"_. In `AGENTS.md` / Cursor / Copilot it's always-on by default —
-the **ripcord** (say _"why"_ / _"explain"_) still drops the mode for that turn.
+**Cursor, the quick way:** this repo ships a ready-made [`.cursor/rules/no-yapping.mdc`](.cursor/rules/no-yapping.mdc) — copy it into your project's `.cursor/rules/` and you're set. It's an _Agent Requested_ rule, so Cursor loads it when your prompt signals it, or force it with `@no-yapping`.
+
+**Triggering.** As a Claude skill it fires when you say _"no yapping"_, _"just the code"_,
+or _"be terse"_. In **Cursor** it installs as an _Agent Requested_ rule — Cursor loads it
+when your prompt signals it, or force it any time with `@no-yapping` (flip `alwaysApply: true`
+in the `.mdc` for always-on). In `AGENTS.md` / Copilot it's always-on. The **ripcord**
+(say _"why"_ / _"explain"_) drops the mode for that turn in every harness.
 
 ---
 

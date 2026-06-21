@@ -24,6 +24,7 @@ usage() { echo "Usage: $0 <claude|agents|codex|cursor|copilot|gemini|windsurf> [
 body() {
   awk 'BEGIN{fm=0}
        /^## Reference files/{exit}
+       /^See `examples/{exit}
        /^---[[:space:]]*$/{fm++; next}
        fm>=2{print}' "$SKILL_MD"
 }
@@ -47,11 +48,15 @@ case "$HARNESS" in
   windsurf)       append_section "$DEST/.windsurf/rules/no-yapping.md" ;;
   cursor)
     f="$DEST/.cursor/rules/no-yapping.mdc"; mkdir -p "$(dirname "$f")"
+    desc=$(grep -m1 '^description:' "$SKILL_MD" | sed 's/^description:[[:space:]]*//')
+    # Agent Requested: a description + no globs = Cursor loads it dynamically when your
+    # prompt is relevant ("no yapping" / "be terse"), or force it with @no-yapping.
+    # Prefer it always-on? Change the line below to: alwaysApply: true
     { echo "---";
-      echo "description: no-yapping — terse, code-first coding mode";
-      echo "alwaysApply: true";
+      echo "description: ${desc:-no-yapping — terse, code-first coding mode}";
+      echo "alwaysApply: false";
       echo "---"; echo;
       body; } > "$f"
-    echo "Installed Cursor rule at $f" ;;
+    echo "Installed Cursor rule (Agent Requested) at $f — say 'no yapping' or @no-yapping to invoke" ;;
   *) echo "Unknown harness: $HARNESS"; usage ;;
 esac
