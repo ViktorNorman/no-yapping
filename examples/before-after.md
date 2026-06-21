@@ -59,33 +59,56 @@ Real coding turns, yappy version vs `no-yapping`. Same correctness, less noise.
 
 ---
 
-## 3. Blocked by ambiguity
+## 3. Vague ask → one-line redirect (rule 7)
 
-**User:** add caching to this endpoint
+**User:** this component is kind of a mess, can you clean it up?
 
 **❌ Before**
 
-> Caching is a broad topic and the right strategy really depends on your specific
-> requirements around freshness, invalidation, and infrastructure. Are you thinking
-> in-memory? Redis? HTTP cache headers? There are trade-offs to each. Generally
-> speaking, it's worth considering...
+> Cleaning up components is a great way to improve maintainability! There are a few
+> dimensions to consider: state management, prop drilling, separation of concerns,
+> and naming. Generally it's worth thinking holistically about the component's
+> responsibilities before refactoring. Could you tell me more about what's bothering
+> you — is it the length, the state, the styling, the logic...?
 
 **✅ After**
 
-> One thing changes the code: cache where?
->
-> 1. In-memory (single instance) — I'd default to this for simplicity.
-> 2. Redis (shared across instances).
->
-> Say 1 or 2 and I'll write it.
+> `ContactForm.tsx` — "mess" = the 4 repeated `useState` + inline validation? Replace with one `useReducer`? (y / point me elsewhere)
+
+One line. Names the file, names the concrete change, lets you answer "yes". No
+interrogation, no philosophy. If you don't reply, it proceeds on that guess.
 
 ---
 
-## 4. Ripcord pulled
+## 4. Too many concepts → menu (rule 6)
+
+**User:** the auth flow needs work — fix the token refresh, move sessions to redis, and add role checks
+
+**❌ Before**
+
+> This is a substantial piece of work that touches several parts of the system.
+> Let me put together a comprehensive plan that addresses each concern in a robust,
+> scalable way, considering how they interrelate...
+> *(...three paragraphs, then starts editing four files at once)*
+
+**✅ After**
+
+> Three changes:
+> 1. extract token refresh in `auth.ts`
+> 2. move sessions to redis
+> 3. add role checks to the route guard
+>
+> Which first? (other two parked)
+
+No plan essay, no doing all three at once. A menu, one pick, the rest parked.
+
+---
+
+## 5. Ripcord pulled (rule 8)
 
 **User:** why is B slower? explain
 
-**✅ After** (rule 8 — explain fully when asked)
+**✅ After** (explain fully when asked)
 
 > `findIndex` scans the array for every element, so it's O(n²): 10k users → ~100M
 > comparisons. The Map builds a lookup once and reads in O(1), so the whole pass is
@@ -93,3 +116,20 @@ Real coding turns, yappy version vs `no-yapping`. Same correctness, less noise.
 
 The mode steps aside the moment you ask for reasoning. That's the point — the *why*
 is available on demand, not forced on every turn.
+
+---
+
+## 6. Sloppy code hiding a real bug (rule 7 — the brevity exception)
+
+**User:** this dashboard.js file is a complete disaster honestly, can you sort it out?
+
+**❌ Before**
+
+> *(...a 400-word inventory of every style nit, with the actual security hole buried as item #4...)*
+
+**✅ After**
+
+> Bigger issue first: `dashboard.js` drops `data[i].name` into `innerHTML` (lines 16, 21) — that's an XSS hole. Escape it / use `textContent`, then collapse the nested XHR into one `fetch` chain? (y / point me elsewhere)
+
+Still one line. But terse never means silent about a thing that will break — a real bug
+(XSS, injection, a crash, data loss) gets named in the same breath, *before* the fix.
